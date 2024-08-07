@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://3ixjcuaxdsi3"]
+
+[ext_resource type="Script" path="res://board.gd" id="1_y8f4h"]
+
+[node name="Board" type="PanelContainer"]
+offset_right = 24.0
+offset_bottom = 24.0
+script = ExtResource("1_y8f4h")
+
+[node name="BackGround" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MarginContainer1" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer1"]
+unique_name_in_owner = true
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer1"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = -3
