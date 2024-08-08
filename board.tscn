@@ -10,6 +10,7 @@ script = ExtResource("1_y8f4h")
 [node name="BackGround" type="ColorRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
+color = Color(0.992157, 0.960784, 0.901961, 1)
 
 [node name="MarginContainer1" type="MarginContainer" parent="."]
 unique_name_in_owner = true
