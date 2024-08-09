@@ -1,0 +1,147 @@
+[gd_scene load_steps=2 format=3 uid="uid://b11xf2rdf2q21"]
+
+[ext_resource type="Script" path="res://window_create_project.gd" id="1_elplm"]
+
+[node name="WindowCreateProject" type="Window"]
+title = "建立新專案"
+initial_position = 1
+size = Vector2i(640, 480)
+transient = true
+exclusive = true
+unresizable = true
+script = ExtResource("1_elplm")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "半形/全形"
+
+[node name="OptionButtonFullHalfWidth" type="OptionButton" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "半形"
+popup/item_0/id = 0
+popup/item_1/text = "全形"
+popup/item_1/id = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "半形寬度"
+
+[node name="SpinBoxCharHalfWidth" type="SpinBox" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+value = 8.0
+allow_greater = true
+
+[node name="Label2" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "字元高度"
+
+[node name="SpinBoxCharHeight" type="SpinBox" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 2.0
+step = 2.0
+value = 16.0
+allow_greater = true
+editable = false
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "字元數量"
+
+[node name="SpinBoxCharCount" type="SpinBox" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "專案名稱"
+
+[node name="LineEditProjectName" type="LineEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_to_text_length = true
+clear_button_enabled = true
+caret_blink = true
+
+[node name="ButtonCreate" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "建立"
+
+[node name="LabelError" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+text = "error"
+horizontal_alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label2" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "幫助:"
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "1. 全形字元寬度為半形字元的兩倍"
+
+[node name="Label5" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "2. 由於使用的字體為unifont-15，字形大小為16x16，若要使用本工具的字體轉像素功能，建議不要修改字元寬度與高度"
+
+[node name="Label3" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "3. 專案名稱為生成任何檔案時所套用的檔名"
+
+[node name="Label4" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "4. 除了專案名稱以外的其他設置都能再次進行更改"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/ButtonCreate" to="." method="_on_button_create_pressed"]

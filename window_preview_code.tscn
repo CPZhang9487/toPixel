@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhgbl5eytydyh"]
+
+[ext_resource type="Script" path="res://window_preview_code.gd" id="1_brxol"]
+
+[sub_resource type="SystemFont" id="SystemFont_aw3el"]
+
+[sub_resource type="Theme" id="Theme_5hrsd"]
+default_font = SubResource("SystemFont_aw3el")
+
+[node name="WindowPreviewCode" type="Window"]
+title = "預覽程式碼"
+initial_position = 1
+size = Vector2i(640, 480)
+transient = true
+exclusive = true
+unresizable = true
+script = ExtResource("1_brxol")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ButtonSave" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "存檔"
+
+[node name="CodeEdit" type="CodeEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_5hrsd")
+line_folding = true
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="VBoxContainer/ButtonSave" to="." method="_on_button_save_pressed"]

@@ -1,101 +1,208 @@
 @tool
-extends Container
+extends Control
+class_name Board
 
 
-@export var background_color := Color.OLD_LACE:
+signal background_color_changed(value: Color)
+signal block_size_changed(value: int)
+signal generated_code(code: String)
+signal renewed(full_half_width: FullHalfWidth, char_half_width: int, char_height: int, char_count: int)
+
+
+enum FullHalfWidth {
+	FULL,
+	HALF,
+}
+
+
+var annotation := ""
+var background_color := Color.OLD_LACE:
 	set(value):
 		background_color = value
-		if not is_node_ready():
-			await ready
-		back_ground.color = value
-@export var half_width_size := Vector2i(8, 16)
-@export var full_width_size := Vector2i(16, 16)
-
-
+		background_color_changed.emit(value)
+		queue_redraw()
 var block_size := 30:
 	set(value):
+		if value < 1:
+			value = 1
 		block_size = value
+		block_size_changed.emit(value)
 		_resize()
 
 
-var _image_texture_background := ImageTexture.new()
-var _image_texture_black := ImageTexture.new()
+var _char_half_width := 8
+var _char_height := 16
+var _mouse_left_pressed := false
+var _mouse_right_pressed := false
+var _full_half_width := FullHalfWidth.HALF
+var _is_filled_arr := [[]]
 
 
-@onready var back_ground: ColorRect = %BackGround
-@onready var margin_container_1: MarginContainer = %MarginContainer1
-@onready var color_rect: ColorRect = %ColorRect
-@onready var h_box_container: HBoxContainer = %HBoxContainer
+@onready var sub_viewport: SubViewport = %SubViewport
+@onready var label: Label = %Label
+@onready var texture_rect: TextureRect = %TextureRect
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		_mouse_left_pressed = event.button_index == MOUSE_BUTTON_LEFT and event.pressed
+		_mouse_right_pressed = event.button_index == MOUSE_BUTTON_RIGHT and event.pressed
+		_set_pixel()
+	elif event is InputEventMouseMotion:
+		_set_pixel()
+
+
+func _draw() -> void:
+	draw_rect(
+		Rect2(Vector2.ZERO, size),
+		background_color,
+	)
+	for y in range(_char_height):
+		for x in range(get_width()):
+			draw_rect(
+				Rect2(
+					block_size * (x + 0.5),
+					block_size * (y + 0.5),
+					block_size,
+					block_size,
+				),
+				Color.BLACK if _is_filled_arr[y][x] else background_color,
+			)
+	for y in range(_char_height + 1):
+		draw_line(
+			Vector2(block_size * 0.5, block_size * (y + 0.5)),
+			Vector2(size.x - block_size * 0.5, block_size * (y + 0.5)),
+			Color.BLACK,
+			-1 if y % (_char_height / 2) != 0 and y != _char_height else 2,
+		)
+	for x in range(get_width() + 1):
+		draw_line(
+			Vector2(block_size * (x + 0.5), block_size * 0.5),
+			Vector2(block_size * (x + 0.5), size.y - block_size * 0.5),
+			Color.BLACK,
+			-1 if x % (get_char_width()) != 0 else 2,
+		)
+	generated_code.emit(get_code())
 
 
 func _ready() -> void:
-	back_ground.color = background_color
-
-	var image_background := Image.new()
-	image_background.set_data(1, 1, false, Image.FORMAT_RGB8, [0, 0, 0])
-	image_background.set_pixel(0, 0, background_color)
-	_image_texture_background.set_image(image_background)
-
-	var image_black := Image.new()
-	image_black.set_data(1, 1, false, Image.FORMAT_RGB8, [0, 0, 0])
-	image_black.set_pixel(0, 0, Color.BLACK)
-	_image_texture_black.set_image(image_black)
-
 	_resize()
 
 
-func add(type: String) -> void:
-	var width := 0
-	var height := half_width_size.y
-	if type == "half":
-		width = half_width_size.x
-	elif type == "full":
-		width = full_width_size.x
-
-	var _margin_container1 := MarginContainer.new()
-	_margin_container1.add_theme_constant_override("margin_left", 3)
-	_margin_container1.add_theme_constant_override("margin_top", 3)
-	_margin_container1.add_theme_constant_override("margin_right", 3)
-	_margin_container1.add_theme_constant_override("margin_bottom", 3)
-	h_box_container.add_child(_margin_container1)
-	var _v_box_container1 := VBoxContainer.new()
-	_v_box_container1.add_theme_constant_override("separation", 1)
-	_margin_container1.add_child(_v_box_container1)
-	for y in range(height):
-		var _h_box_container1 := HBoxContainer.new()
-		_h_box_container1.add_theme_constant_override("separation", 1)
-		_v_box_container1.add_child(_h_box_container1)
-		for x in range(width):
-			var _texture_button1 := TextureButton.new()
-			_texture_button1.custom_minimum_size = Vector2i.ONE * block_size
-			_texture_button1.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
-			_texture_button1.name = "%d %d" % [y, x]
-			_texture_button1.stretch_mode = TextureButton.STRETCH_SCALE
-			_texture_button1.texture_normal = _image_texture_background
-			_texture_button1.add_to_group("_texture_buttons")
-			_texture_button1.pressed.connect(func ():
-				if _texture_button1.texture_normal.get_image().get_pixel(0, 0) == Color.BLACK:
-					_texture_button1.texture_normal = _image_texture_background
-				else:
-					_texture_button1.texture_normal = _image_texture_black
-			)
-			_h_box_container1.add_child(_texture_button1)
-	_resize()
-
-
-func delete() -> void:
-	if h_box_container.get_children().size() == 0:
+func convert_image_to_pixel(image: Image):
+	if image == null:
 		return
-	h_box_container.remove_child(h_box_container.get_children()[-1])
+	if get_width() == 0:
+		return
+	label.visible = false
+	texture_rect.size.y = _char_height
+	texture_rect.texture = ImageTexture.create_from_image(image)
+	texture_rect.visible = true
+	await RenderingServer.frame_post_draw
+	renew(FullHalfWidth.HALF, _char_half_width, _char_height, ceil(texture_rect.size.x / get_char_width()))
+	sub_viewport.size = Vector2(get_width(), _char_height)
+	await RenderingServer.frame_post_draw
+	var _image := sub_viewport.get_texture().get_image()
+	for y in range(sub_viewport.size.y):
+		for x in range(sub_viewport.size.x):
+			_is_filled_arr[y][x] = _image.get_pixel(x, y).get_luminance() < 0.5
+	queue_redraw()
+
+
+func convert_text_to_pixel(text: String) -> void:
+	if get_width() == 0:
+		return
+	sub_viewport.size = Vector2(get_width(), _char_height)
+	label.text = text
+	label.visible = true
+	texture_rect.visible = false
+	await RenderingServer.frame_post_draw
+	var image := sub_viewport.get_texture().get_image()
+	for y in range(sub_viewport.size.y):
+		for x in range(sub_viewport.size.x):
+			_is_filled_arr[y][x] = image.get_pixel(x, y) == Color.BLACK
+	queue_redraw()
+
+
+func get_char_count() -> int:
+	if _is_filled_arr.size() == 0:
+		return 0
+	return get_width() / get_char_width()
+
+
+func get_char_width() -> int:
+	return _char_half_width * (2 if _full_half_width == FullHalfWidth.FULL else 1)
+
+
+func get_code() -> String:
+	var result := "const BYTE arr[%d][%d][%d] = { // %s\n" % [get_char_count(), 2, get_char_width(), annotation]
+	var annotations := annotation.split(",")
+	for i in range(get_char_count()):
+		result += "\t{ // %d == %s\n" % [i, "" if annotations.size() <= i else annotations[i]]
+		for j in range(2):
+			result += "\t\t{"
+			for x in range(get_char_width()):
+				var n := 0
+				for y in range(_char_height / 2 * (j + 1) - 1, _char_height / 2 * j -1, -1):
+					n <<= 1
+					if _is_filled_arr[y][x + i * get_char_width()]:
+						n += 1
+				result += "0x%02x, " % [n]
+			result += "},\n"
+		result += "\t}, // %d == %s\n" % [i, "" if annotations.size() <= i else annotations[i]]
+	result += "};\n\n"
+	return result
+
+
+func get_width() -> int:
+	return _is_filled_arr[0].size()
+
+
+func renew(full_half_width: FullHalfWidth, char_half_width: int, char_height: int, char_count: int) -> void:
+	_full_half_width = full_half_width
+	_char_half_width = char_half_width
+	_char_height = char_height
+
+	_is_filled_arr.clear()
+	for y in range(_char_height):
+		var _arr := []
+		_arr.resize(get_char_width() * char_count)
+		_arr.fill(false)
+		_is_filled_arr.append(_arr)
+
 	_resize()
+
+	renewed.emit(full_half_width, char_half_width, char_height, char_count)
+
+
+func save_image(path: String) -> void:
+	var image := Image.new()
+	image.set_data(1, 1, false, Image.FORMAT_RGB8, [0, 0, 0])
+	image.resize(get_width(), _char_height)
+	for y in _char_height:
+		for x in get_width():
+			image.set_pixel(x, y, Color.BLACK if _is_filled_arr[y][x] else Color.WHITE)
+	image.save_png(path)
 
 
 func _resize() -> void:
-	if not is_node_ready():
-		await ready
-	margin_container_1.add_theme_constant_override("margin_left", block_size / 2.0 - 3)
-	margin_container_1.add_theme_constant_override("margin_top", block_size / 2.0 - 3)
-	margin_container_1.add_theme_constant_override("margin_right", block_size / 2.0 - 3)
-	margin_container_1.add_theme_constant_override("margin_bottom", block_size / 2.0 - 3)
-	for _texture_button in get_tree().get_nodes_in_group("_texture_buttons"):
-		_texture_button.custom_minimum_size = Vector2i.ONE * block_size
+	custom_minimum_size = Vector2.ZERO
+	size = Vector2(
+		block_size * (get_width() + 1),
+		block_size * (_char_height + 1),
+	)
+	custom_minimum_size = size
+
+	queue_redraw()
+
+
+func _set_pixel() -> void:
+	var coord := get_local_mouse_position() - Vector2.ONE * block_size / 2
+	coord /= block_size
+	coord = coord.floor()
+	if coord.x < 0 or coord.x >= get_width() or coord.y < 0 or coord.y >= _char_height:
+		return
+	if not _mouse_left_pressed and not _mouse_right_pressed:
+		return
+	_is_filled_arr[coord.y][coord.x] = _mouse_left_pressed or not _mouse_right_pressed
+	queue_redraw()

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://brdxuhy0wymas"]
+[gd_scene load_steps=6 format=3 uid="uid://brdxuhy0wymas"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cfiib"]
 [ext_resource type="FontFile" uid="uid://c0ce2htpqw3f8" path="res://unifont-15.1.05.otf" id="1_odhna"]
 [ext_resource type="PackedScene" uid="uid://3ixjcuaxdsi3" path="res://board.tscn" id="2_w5xk1"]
+[ext_resource type="PackedScene" uid="uid://da4fhkbajq7hp" path="res://settings.tscn" id="3_ar45u"]
 
 [sub_resource type="Theme" id="Theme_lorrx"]
 default_font = ExtResource("1_odhna")
@@ -19,266 +20,32 @@ script = ExtResource("1_cfiib")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-offset_right = 566.0
-offset_bottom = 250.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
 
-[node name="Header" type="MarginContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Header"]
+[node name="Settings" parent="VBoxContainer" instance=ExtResource("3_ar45u")]
 layout_mode = 2
 
-[node name="LabelTitle" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "液晶刻字 ver. 1.1"
+size_flags_vertical = 3
 
-[node name="LabelText" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "使用字形 unifont 15:"
-
-[node name="LinkButtonUnifont15" type="LinkButton" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "https://unifoundry.com/unifont/"
-uri = "https://unifoundry.com/unifont/"
-
-[node name="LabelText2" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "每個字元所佔的像素高度皆為16，半形寬度佔8，全形為16。 "
-
-[node name="LabelText3" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "點擊格子或使用文字/圖片轉像素的功能進行刻字。"
-
-[node name="LabelText4" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "限於C的陣列特性，半形與全形會分別存成兩個陣列。"
-
-[node name="LabelText5" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "1.1版本新增存檔時會額外建立一圖檔方便載入，以及註解功能。"
-
-[node name="LabelText6" type="Label" parent="VBoxContainer/Header/VBoxContainer"]
-layout_mode = 2
-text = "注意半形會存在圖片左側，全形會存在右側。"
-
-[node name="Settings" type="MarginContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Settings"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="BoardAddDelete" type="PanelContainer" parent="VBoxContainer/Settings/HBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LabelTitle" type="Label" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "新增/刪除"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="OptionButtonFullHalf" type="OptionButton" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Board" parent="VBoxContainer/ScrollContainer" instance=ExtResource("2_w5xk1")]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
-selected = 0
-popup/item_0/text = "半形"
-popup/item_0/id = 0
-popup/item_1/text = "全形"
-popup/item_1/id = 1
 
-[node name="ButtonAdd" type="Button" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "+"
-
-[node name="ButtonDelete" type="Button" parent="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "-"
-
-[node name="BoardSetting" type="PanelContainer" parent="VBoxContainer/Settings/HBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LabelTitle" type="Label" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "設定"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="LabelBlockSize" type="Label" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "block_size:"
-
-[node name="SpinBoxBlockSize" type="SpinBox" parent="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-value = 30.0
-allow_greater = true
-
-[node name="TextToPixel" type="PanelContainer" parent="VBoxContainer/Settings/HBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LabelTitle" type="Label" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "文字/圖片轉像素"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="LineEditTextToPixel" type="LineEdit" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "要轉像素的文字"
-expand_to_text_length = true
-clear_button_enabled = true
-caret_blink = true
-
-[node name="ButtonTextToPixel" type="Button" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "轉換"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="LineEditImageToPixel" type="LineEdit" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "要轉像素的圖片路徑"
-expand_to_text_length = true
-clear_button_enabled = true
-caret_blink = true
-
-[node name="ButtonImageToPixel" type="Button" parent="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "轉換"
-
-[node name="Save" type="PanelContainer" parent="VBoxContainer/Settings/HBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Settings/HBoxContainer/Save"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LabelTitle" type="Label" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "存檔"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="LineEditAnnotation" type="LineEdit" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "半形註解 各元素以,分隔"
-expand_to_text_length = true
-clear_button_enabled = true
-caret_blink = true
-
-[node name="LineEditAnnotation2" type="LineEdit" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "全形註解 各元素以,分隔"
-expand_to_text_length = true
-clear_button_enabled = true
-caret_blink = true
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="LineEditSave" type="LineEdit" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "./byteArr.c"
-placeholder_text = "存檔路徑與檔名"
-expand_to_text_length = true
-clear_button_enabled = true
-caret_blink = true
-
-[node name="ButtonSave" type="Button" parent="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "存檔"
-
-[node name="Board" parent="VBoxContainer" instance=ExtResource("2_w5xk1")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="SubViewport" type="SubViewport" parent="."]
-unique_name_in_owner = true
-size = Vector2i(8, 16)
-render_target_update_mode = 4
-
-[node name="ColorRect" type="ColorRect" parent="SubViewport"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="LabelText" type="Label" parent="SubViewport"]
-unique_name_in_owner = true
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_odhna")
-text = "測試"
-
-[connection signal="resized" from="VBoxContainer" to="." method="_on_v_box_container_resized"]
-[connection signal="pressed" from="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer/HBoxContainer/ButtonAdd" to="." method="_on_button_add_pressed"]
-[connection signal="pressed" from="VBoxContainer/Settings/HBoxContainer/BoardAddDelete/MarginContainer/VBoxContainer/HBoxContainer/ButtonDelete" to="." method="_on_button_delete_pressed"]
-[connection signal="value_changed" from="VBoxContainer/Settings/HBoxContainer/BoardSetting/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxBlockSize" to="." method="_on_spin_box_block_size_value_changed"]
-[connection signal="pressed" from="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer/ButtonTextToPixel" to="." method="_on_button_text_to_pixel_pressed"]
-[connection signal="pressed" from="VBoxContainer/Settings/HBoxContainer/TextToPixel/MarginContainer/VBoxContainer/HBoxContainer2/ButtonImageToPixel" to="." method="_on_button_image_to_pixel_pressed"]
-[connection signal="pressed" from="VBoxContainer/Settings/HBoxContainer/Save/MarginContainer/VBoxContainer/HBoxContainer2/ButtonSave" to="." method="_on_button_save_pressed"]
+[connection signal="should_convert_image_to_pixel" from="VBoxContainer/Settings" to="." method="_on_settings_should_convert_image_to_pixel"]
+[connection signal="should_convert_text_to_pixel" from="VBoxContainer/Settings" to="." method="_on_settings_should_convert_text_to_pixel"]
+[connection signal="should_renew_board" from="VBoxContainer/Settings" to="." method="_on_settings_should_renew_board"]
+[connection signal="should_save_image" from="VBoxContainer/Settings" to="." method="_on_settings_should_save_image"]
+[connection signal="should_set_annotation" from="VBoxContainer/Settings" to="." method="_on_settings_should_set_annotation"]
+[connection signal="should_set_board_background_color" from="VBoxContainer/Settings" to="." method="_on_settings_should_set_board_background_color"]
+[connection signal="should_set_board_block_size" from="VBoxContainer/Settings" to="." method="_on_settings_should_set_board_block_size"]
+[connection signal="background_color_changed" from="VBoxContainer/ScrollContainer/Board" to="." method="_on_board_background_color_changed"]
+[connection signal="block_size_changed" from="VBoxContainer/ScrollContainer/Board" to="." method="_on_board_block_size_changed"]
+[connection signal="generated_code" from="VBoxContainer/ScrollContainer/Board" to="." method="_on_board_generated_code"]
+[connection signal="renewed" from="VBoxContainer/ScrollContainer/Board" to="." method="_on_board_renewed"]

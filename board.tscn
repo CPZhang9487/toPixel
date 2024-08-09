@@ -1,31 +1,40 @@
-[gd_scene load_steps=2 format=3 uid="uid://3ixjcuaxdsi3"]
+[gd_scene load_steps=4 format=3 uid="uid://3ixjcuaxdsi3"]
 
 [ext_resource type="Script" path="res://board.gd" id="1_y8f4h"]
+[ext_resource type="FontFile" uid="uid://c0ce2htpqw3f8" path="res://unifont-15.1.05.otf" id="2_frpf5"]
 
-[node name="Board" type="PanelContainer"]
-offset_right = 24.0
-offset_bottom = 24.0
+[sub_resource type="LabelSettings" id="LabelSettings_4856f"]
+font = ExtResource("2_frpf5")
+font_color = Color(0, 0, 0, 1)
+
+[node name="Board" type="Control"]
+custom_minimum_size = Vector2(30, 510)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 30.0
+offset_bottom = 510.0
 script = ExtResource("1_y8f4h")
 
-[node name="BackGround" type="ColorRect" parent="."]
+[node name="SubViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-color = Color(0.992157, 0.960784, 0.901961, 1)
+size = Vector2i(16, 16)
+render_target_update_mode = 4
 
-[node name="MarginContainer1" type="MarginContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
+[node name="ColorRectWhite" type="ColorRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer1"]
+[node name="Label" type="Label" parent="SubViewport"]
 unique_name_in_owner = true
-layout_mode = 2
-color = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "t"
+label_settings = SubResource("LabelSettings_4856f")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer1"]
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = -3
+offset_bottom = 16.0
+expand_mode = 3
